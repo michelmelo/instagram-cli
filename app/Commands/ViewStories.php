@@ -21,6 +21,9 @@ class ViewStories extends Command
      * @var string
      */
     protected $description = 'Instagram :: Show Views Story';
+    protected $ig;
+    protected $instagram_login;
+    protected $instagram_password;
 
     /**
      * Execute the console command.
@@ -30,15 +33,70 @@ class ViewStories extends Command
     public function handle()
     {
         //
+        // $this->line(print_r(app()));
         if (!env('INSTAGRAM_USERNAME') || !env('INSTAGRAM_PASSWORD')) {
             $this->error('Please provide your username and password in the .env file.');
             exit;
         }
+        $this->line("--------------------------------------------------------------------");
+        $this->line("--------------------------------------------------------------------");
+        $this->line("--------------------------------------------------------------------");
+        $this->line("------------------------- Instagram Cli ----------------------------");
+        $this->line("--------------------------------------------------------------------");
+        $this->line("--------------------------------------------------------------------");
+        $this->line("--------------------------------------------------------------------");
 
-        $ig = $this->login(env('INSTAGRAM_USERNAME'), env('INSTAGRAM_PASSWORD'));
+        $this->instagram_login    = ($this->option('username')) ? $this->option('username') : env('INSTAGRAM_USERNAME');
+        $this->instagram_password = ($this->option('password')) ? $this->option('password') : env('INSTAGRAM_PASSWORD');
+        $this->line("--------------------------- pre Login ------------------------------");
+        $this->ig = $this->login($this->instagram_login, $this->instagram_password);
+        $this->line("-------------------------- Login Done ------------------------------");
+        $this->line("------------------------ start get mark ----------------------------");
+        $this->getmarkMediaSeen();
+        $this->line("------------------------ finish get mark ---------------------------");
 
     }
 
+    public function getmarkMediaSeen()
+    {
+        try {
+
+            $this->line("--------------------------------------------------------------------");
+            $this->line("--------------------------------------------------------------------");
+            $this->line("--------------------------------------------------------------------");
+            $this->line("------------------------- Mark Media Seen --------------------------");
+            $this->line("--------------------------------------------------------------------");
+            $this->line("--------------------------------------------------------------------");
+            $this->line("--------------------------------------------------------------------");
+            $feed     = $this->ig->story->getReelsTrayFeed();
+            $itemsnew = $feed->getTray();
+            $bar      = $this->output->createProgressBar(count($itemsnew));
+            $bar->start();
+
+            foreach ($itemsnew as $key => $item) {
+                if (0 == $key) {continue;}
+                if (is_null($item->getUser())) {continue;}
+                $username = $item->getUser()->getUsername();
+                $userID   = $this->ig->people->getUserIdForName($item->getUser()->getUsername());
+                $feed3    = $this->ig->story->getUserStoryFeed($userID);
+                if (is_null($feed3->getReel())) {
+                    continue;
+                }
+                $items = $feed3->getReel()->getItems();
+                // dd($items);
+                $this->notify("instagram", "username: " . $username . " --- count: " . count($items));
+                $this->ig->story->markMediaSeen($items);
+                sleep(rand(5, 15));
+                $bar->advance();
+            }
+            $bar->finish();
+            $this->line("--------------------------------------------------------------------");
+            exit(0);
+
+        } catch (\InstagramAPI\Exception\InstagramException $e) {
+            echo 'Something went wrong: ' . $e->getMessage() . "\n";
+        }
+    }
 
     private function login(string $username, string $password): Instagram
     {
