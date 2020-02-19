@@ -65,6 +65,8 @@ class ViewStories extends Command
     {
         $this->line("------------------------ start Likes ---------------------------");
 
+        $bar = $this->output->createProgressBar(count($users));
+        $bar->start();
         foreach ($users as $user) {
             $items = $this->ig->timeline->getUserFeed($user);
             $line  = 1;
@@ -74,16 +76,16 @@ class ViewStories extends Command
                 if ($line > 1) {
                     continue;
                 }
-                $this->line("Code: " . $item->getCode());
-                $this->line("Username: " . $item->getUser()->getUsername());
+                // $this->line("Code: " . $item->getCode());
+                // $this->line("Username: " . $item->getUser()->getUsername());
                 $liked = $this->ig->media->like($item->getId(), $line);
-                $this->line("Like: " . $liked->getStatus());
+                // $this->line("Like: " . $liked->getStatus());
                 $line++;
                 sleep(rand(3, 5));
             }
-
-            // dd($feed->asJson());
+            $bar->advance();
         }
+        $bar->finish();
         $this->line("------------------------ start Likes ---------------------------");
 
     }
