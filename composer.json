@@ -1,6 +1,6 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
+    "name": "michelmelo/instagram-cli",
+    "description": "Instagram Cli",
     "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
     "homepage": "https://laravel-zero.com",
     "type": "project",
@@ -11,8 +11,8 @@
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Michel Melo",
+            "email": "eu@michelmelo.pt"
         }
     ],
     "require": {
