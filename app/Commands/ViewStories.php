@@ -13,7 +13,7 @@ class ViewStories extends Command
      *
      * @var string
      */
-    protected $signature = 'instagram:viewstories {account} {--username=} {--password=} ';
+    protected $signature = 'instagram:viewstories {--username=} {--password=} ';
 
     /**
      * The description of the command.
@@ -37,19 +37,9 @@ class ViewStories extends Command
 
         $ig = $this->login(env('INSTAGRAM_USERNAME'), env('INSTAGRAM_PASSWORD'));
 
-        $account = $this->option('account');
     }
 
-    /**
-     * Define the command's schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-     * @return void
-     */
-    public function schedule(Schedule $schedule): void
-    {
-        // $schedule->command(static::class)->everyMinute();
-    }
+
     private function login(string $username, string $password): Instagram
     {
         $ig = new Instagram;
