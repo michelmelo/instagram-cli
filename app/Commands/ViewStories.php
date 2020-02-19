@@ -13,7 +13,7 @@ class ViewStories extends Command
      *
      * @var string
      */
-    protected $signature = 'instagram:viewstories {--username=} {--password=} ';
+    protected $signature = 'instagram:viewstories {--username=} {--password=} {--like=false} ';
 
     /**
      * The description of the command.
@@ -24,6 +24,7 @@ class ViewStories extends Command
     protected $ig;
     protected $instagram_login;
     protected $instagram_password;
+    protected $like;
 
     /**
      * Execute the console command.
@@ -48,12 +49,42 @@ class ViewStories extends Command
 
         $this->instagram_login    = ($this->option('username')) ? $this->option('username') : env('INSTAGRAM_USERNAME');
         $this->instagram_password = ($this->option('password')) ? $this->option('password') : env('INSTAGRAM_PASSWORD');
+        $this->like               = $this->option('password');
         $this->line("--------------------------- pre Login ------------------------------");
         $this->ig = $this->login($this->instagram_login, $this->instagram_password);
         $this->line("-------------------------- Login Done ------------------------------");
         $this->line("------------------------ start get mark ----------------------------");
-        $this->getmarkMediaSeen();
+        $result = $this->getmarkMediaSeen();
         $this->line("------------------------ finish get mark ---------------------------");
+        if ($this->like == true) {
+            $this->getLikes($result);
+        }
+
+    }
+    public function getLikes($users = [])
+    {
+        $this->line("------------------------ start Likes ---------------------------");
+
+        foreach ($users as $user) {
+            $items = $this->ig->timeline->getUserFeed($user);
+            $line  = 1;
+
+            foreach ($items->getItems() as $item) {
+
+                if ($line > 1) {
+                    continue;
+                }
+                $this->line("Code: " . $item->getCode());
+                $this->line("Username: " . $item->getUser()->getUsername());
+                $liked = $this->ig->media->like($item->getId(), $line);
+                $this->line("Like: " . $liked->getStatus());
+                $line++;
+                sleep(rand(3, 5));
+            }
+
+            // dd($feed->asJson());
+        }
+        $this->line("------------------------ start Likes ---------------------------");
 
     }
 
@@ -68,30 +99,34 @@ class ViewStories extends Command
             $this->line("--------------------------------------------------------------------");
             $this->line("--------------------------------------------------------------------");
             $this->line("--------------------------------------------------------------------");
+            $users    = [];
             $feed     = $this->ig->story->getReelsTrayFeed();
             $itemsnew = $feed->getTray();
             $bar      = $this->output->createProgressBar(count($itemsnew));
             $bar->start();
 
             foreach ($itemsnew as $key => $item) {
-                if (0 == $key) {continue;}
+                if ($key == 0) {continue;}
+                // if ($key > 5) {continue;}
                 if (is_null($item->getUser())) {continue;}
                 $username = $item->getUser()->getUsername();
                 $userID   = $this->ig->people->getUserIdForName($item->getUser()->getUsername());
                 $feed3    = $this->ig->story->getUserStoryFeed($userID);
+                $users[]  = $userID;
                 if (is_null($feed3->getReel())) {
                     continue;
                 }
                 $items = $feed3->getReel()->getItems();
-                // dd($items);
                 $this->notify("instagram", "username: " . $username . " --- count: " . count($items));
                 $this->ig->story->markMediaSeen($items);
-                sleep(rand(5, 15));
+                sleep(rand(3, 5));
                 $bar->advance();
             }
             $bar->finish();
+            $this->line("   ");
             $this->line("--------------------------------------------------------------------");
-            exit(0);
+            return $users;
+            // exit(0);
 
         } catch (\InstagramAPI\Exception\InstagramException $e) {
             echo 'Something went wrong: ' . $e->getMessage() . "\n";
