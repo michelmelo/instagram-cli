@@ -1,7 +1,7 @@
 # Instagram CLI
 
 <p align="center">
-  <a href="https://travis-ci.org/michelmelo/instagram-cli"><img src="https://img.shields.io/travis/michelmelo/instagram-cli/stable.svg" alt="Build Status"></img></a>
+  <a href="https://travis-ci.org/michelmelo/instagram-cli"><img src="https://img.shields.io/travis/michelmelo/instagram-cli/stable.svg" alt="Build Status"></a>
 
   <a href="https://packagist.org/packages/michelmelo/instagram-cli"><img src="https://poser.pugx.org/michelmelo/instagram-cli/d/total.svg" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/michelmelo/instagram-cli"><img src="https://poser.pugx.org/michelmelo/instagram-cli/v/stable.svg" alt="Latest Stable Version"></a>
@@ -30,7 +30,7 @@ composer install --no-dev
 ## Usage
 
 ```
-php instagram export:json <username>
+php instagram-cli instagram:viewstories
 ```
 
 
