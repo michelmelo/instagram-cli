@@ -2,12 +2,12 @@
     "name": "michelmelo/instagram-cli",
     "description": "Instagram Cli",
     "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "homepage": "https://github.com/michelmelo/instagram-cli",
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "issues": "https://github.com/michelmelo/instagram-cli/issues",
+        "source": "https://github.com/michelmelo/instagram-cli"
     },
     "authors": [
         {
