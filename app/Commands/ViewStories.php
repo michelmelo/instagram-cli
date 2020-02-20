@@ -68,6 +68,29 @@ class ViewStories extends Command
         }
 
     }
+    public function statics(){
+    $headers = ['Name', 'Awesomeness Level'];
+
+    $data = [
+        [
+            'name' => 'Jim',
+            'awesomeness_level' => 'Meh',
+        ],
+        [
+            'name' => 'Conchita',
+            'awesomeness_level' => 'Fabulous',
+        ],
+    ];
+
+    /* Note: the following would work as well:
+    $data = [
+        ['Jim', 'Meh'],
+        ['Conchita', 'Fabulous']
+    ];
+    */
+
+    $this->table($headers, $data);
+    }
     public function getLikes($users = [])
     {
         $this->line("------------------------ start Likes ---------------------------");
