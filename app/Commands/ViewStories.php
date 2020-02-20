@@ -13,7 +13,7 @@ class ViewStories extends Command
      *
      * @var string
      */
-    protected $signature = 'instagram:viewstories {--username=} {--password=} {--like=false} ';
+    protected $signature = 'instagram:viewstories {--username=} {--password=} {--like=false} {--limit=1}';
 
     /**
      * The description of the command.
@@ -25,6 +25,8 @@ class ViewStories extends Command
     protected $instagram_login;
     protected $instagram_password;
     protected $like;
+    protected $limit;
+    protected $name_app;
 
     /**
      * Execute the console command.
@@ -34,7 +36,8 @@ class ViewStories extends Command
     public function handle()
     {
         //
-        // $this->line(print_r(app()));
+        $this->name_app = config('app.name');
+        // $this->line(print_r($this->option()));
         if (!env('INSTAGRAM_USERNAME') || !env('INSTAGRAM_PASSWORD')) {
             $this->error('Please provide your username and password in the .env file.');
             exit;
@@ -49,7 +52,11 @@ class ViewStories extends Command
 
         $this->instagram_login    = ($this->option('username')) ? $this->option('username') : env('INSTAGRAM_USERNAME');
         $this->instagram_password = ($this->option('password')) ? $this->option('password') : env('INSTAGRAM_PASSWORD');
-        $this->like               = $this->option('password');
+        $this->like               = $this->option('like');
+        $this->limit              = $this->option('limit');
+        if ($this->limit > 10) {
+            $this->warn("Instagram can limit or block for many requests in the API.");
+        }
         $this->line("--------------------------- pre Login ------------------------------");
         $this->ig = $this->login($this->instagram_login, $this->instagram_password);
         $this->line("-------------------------- Login Done ------------------------------");
@@ -64,6 +71,7 @@ class ViewStories extends Command
     public function getLikes($users = [])
     {
         $this->line("------------------------ start Likes ---------------------------");
+        $this->notify($this->name_app, "Likes by users");
 
         $bar = $this->output->createProgressBar(count($users));
         $bar->start();
@@ -73,19 +81,17 @@ class ViewStories extends Command
 
             foreach ($items->getItems() as $item) {
 
-                if ($line > 1) {
+                if ($line > $this->limit) {
                     continue;
                 }
-                // $this->line("Code: " . $item->getCode());
-                // $this->line("Username: " . $item->getUser()->getUsername());
                 $liked = $this->ig->media->like($item->getId(), $line);
-                // $this->line("Like: " . $liked->getStatus());
                 $line++;
                 sleep(rand(3, 5));
             }
             $bar->advance();
         }
         $bar->finish();
+        $this->line("    ");
         $this->line("------------------------ start Likes ---------------------------");
 
     }
@@ -93,6 +99,8 @@ class ViewStories extends Command
     public function getmarkMediaSeen()
     {
         try {
+
+            $this->notify($this->name_app, "Mark Media Seen");
 
             $this->line("--------------------------------------------------------------------");
             $this->line("--------------------------------------------------------------------");
@@ -119,7 +127,6 @@ class ViewStories extends Command
                     continue;
                 }
                 $items = $feed3->getReel()->getItems();
-                $this->notify("instagram", "username: " . $username . " --- count: " . count($items));
                 $this->ig->story->markMediaSeen($items);
                 sleep(rand(3, 5));
                 $bar->advance();
