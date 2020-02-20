@@ -28,9 +28,16 @@ composer install --no-dev
 
 ## Usage
 
+```shell
+
+php instagram-cli instagram:viewstories 
+
 ```
-php instagram-cli instagram:viewstories
-```
+##options: 
+- [X] --username=<username>
+- [X] --password=<yourpassword>
+- [x] --like=trueorfalse
+- [X] --limit=6 max 10
 
 
 ## Documentation
