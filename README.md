@@ -38,6 +38,13 @@ php instagram-cli instagram:viewstories
 - [X] --password=<yourpassword>
 - [x] --like=trueorfalse
 - [X] --limit=6 max 10
+    
+# Feature 
+
+- [X] Story
+- [X] Stories and Likes
+- [ ] Likes
+- [ ] Business Statistcs
 
 
 ## Documentation
