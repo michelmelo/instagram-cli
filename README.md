@@ -33,7 +33,7 @@ composer install --no-dev
 php instagram-cli instagram:viewstories 
 
 ```
-##options: 
+## Options: 
 - [X] --username=<username>
 - [X] --password=<yourpassword>
 - [x] --like=trueorfalse
