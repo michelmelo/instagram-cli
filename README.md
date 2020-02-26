@@ -30,7 +30,7 @@ composer install --no-dev
 
 ```shell
 
-php instagram-cli instagram:viewstories 
+instagram:viewstories {--username=} {--password=} {--like=false} {--limit=1}
 
 ```
 ## Options: 
